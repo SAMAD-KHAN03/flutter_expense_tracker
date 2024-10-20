@@ -1,0 +1,41 @@
+plugins {
+    id "com.android.application"
+    id 'com.google.gms.google-services' // Apply the Google services plugin
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+android {
+    namespace = "com.example.expense_app" // Keep this, or change it to a more fitting namespace if needed
+    compileSdkVersion 34 // Use the latest version compatible with Flutter
+    ndkVersion flutter.ndkVersion
+
+    defaultConfig {
+        applicationId "com.example.expense_app" // This is your package name, adjust if needed
+        minSdkVersion 23 // Ensure it matches your Firebase setup
+        targetSdkVersion 33 // Should match your compileSdkVersion
+        versionCode flutter.versionCode
+        versionName "1.0.0" // You can set this to your app version
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.debug // For testing, this can use debug signing
+            minifyEnabled false // Set true if you want to shrink resources
+            shrinkResources false
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}
