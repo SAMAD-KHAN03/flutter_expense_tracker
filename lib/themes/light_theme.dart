@@ -19,7 +19,7 @@ ThemeData lightTheme = ThemeData(
           fontSize: 20,
           fontWeight: FontWeight.bold),
       bodySmall: const TextStyle(
-          color: Colors.black, fontSize: 18, fontWeight: FontWeight.normal)),
+          color: Colors.black, fontSize: 16, fontWeight: FontWeight.normal)),
   useMaterial3: true,
   colorScheme: kcolorScheme,
   appBarTheme: const AppBarTheme().copyWith(
