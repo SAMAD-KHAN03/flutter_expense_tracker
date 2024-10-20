@@ -1,16 +1,29 @@
-# my_expenses
+# Expense Tracker App
 
-A new Flutter project.
+## Overview
+
+The Expense Tracker app is a Flutter application that allows users to manage their expenses efficiently. It includes features such as user authentication (via login/signup and Google authentication) and supports both dark and light themes.
+
+## Features
+
+- User authentication (Email/Password and Google Sign-In)
+- Expense tracking with detailed entries
+- Dark and light theme support
+- Intuitive user interface
+- Real-time data syncing with Firebase
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+To get a local copy up and running, follow these steps:
 
-A few resources to get you started if this is your first Flutter project:
+### Prerequisites
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Flutter SDK installed on your machine
+- An IDE such as Android Studio, Visual Studio Code, or IntelliJ IDEA
+- Firebase project set up with Authentication enabled
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/SAMAD-KHAN03/flutter_expense_tracker.git
