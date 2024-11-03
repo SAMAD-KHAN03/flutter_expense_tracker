@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-
 class Authentication extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _isLoading = false;
@@ -16,6 +15,10 @@ class Authentication extends ChangeNotifier {
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
+  }
+
+  String uid() {
+    return _auth.currentUser!.uid;
   }
 
   void _setSignout(bool value) {
@@ -39,7 +42,7 @@ class Authentication extends ChangeNotifier {
       String email, String password, BuildContext context) async {
     _setLoading(true);
     try {
-       await _auth.createUserWithEmailAndPassword(
+      await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
     } on FirebaseAuthException catch (e) {
       await _showErrorDialog(
@@ -80,7 +83,7 @@ class Authentication extends ChangeNotifier {
     );
   }
 
-  Future<dynamic> signInUsingGoogle(BuildContext context) async {
+  Future<void> signInUsingGoogle(BuildContext context) async {
     _setLoading(true);
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
@@ -90,7 +93,9 @@ class Authentication extends ChangeNotifier {
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
-      return await _auth.signInWithCredential(credentials);
+
+      await _auth.signInWithCredential(credentials);
+      // No need to manage user profile here
     } on Exception catch (e) {
       await _showErrorDialog(context, e.toString());
     } finally {

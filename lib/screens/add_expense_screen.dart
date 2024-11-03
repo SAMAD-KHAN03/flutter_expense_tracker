@@ -37,13 +37,6 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
     }
   }
 
-  String formatTime(TimeOfDay time) {
-    final hours = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
-    final minutes = time.minute.toString().padLeft(2, '0');
-    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
-    return '${hours.toString().padLeft(2, '0')}:$minutes $period';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +44,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
         centerTitle: false,
         title: const Text(
           'Go Back',
-          style: TextStyle(color: Color.fromARGB(255, 217, 217, 217)),
+          style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
         ),
         backgroundColor: Theme.of(context).primaryColor,
       ),
@@ -136,12 +129,12 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                       return;
                     }
                     ref.watch(listprovider.notifier).addItem(
-                        context,
-                        title.text,
-                        _selectedCategory,
-                        double.tryParse(price.text)!,
-                        _pickedDate,
-                        formatTime(TimeOfDay.now()));
+                          context,
+                          title.text,
+                          _selectedCategory,
+                          double.tryParse(price.text)!,
+                          _pickedDate,
+                        );
                     price.clear();
                     title.clear();
                     Navigator.pop(context);

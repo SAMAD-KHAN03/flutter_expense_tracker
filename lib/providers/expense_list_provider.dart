@@ -27,7 +27,7 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
   }
 
   Future<void> addItem(BuildContext context, String title, Category category,
-      double price, DateTime date, String time) async {
+      double price, DateTime date) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       throw Exception('User not authenticated');
@@ -38,7 +38,6 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
       categ: category,
       price: price,
       date: date,
-      time: time,
     );
 
     try {
@@ -46,13 +45,12 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
           .collection('users')
           .doc(user.uid)
           .collection('expenses')
-          .doc(); 
+          .doc();
       await expenseDoc.set({
         'title': expense.title,
         'category': expense.categ.toString(),
         'price': expense.price,
         'date': expense.date.toIso8601String(),
-        'time': expense.time,
       });
       _categorySum[expense.categ] =
           _categorySum[expense.categ]! + expense.price;
@@ -63,7 +61,8 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
     }
   }
 
-  Future<void> fetchData() async {
+  Future<void> fetchData({DateTime? month}) async {
+    final datetime = month ?? DateTime.now();
     isFetching = true;
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
@@ -78,26 +77,39 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
           .collection('expenses')
           .get();
 
-      final expenses = querySnapshot.docs.map((doc) {
-        final data = doc.data();
-        final newExpense = Expense(
-          title: data['title'],
-          categ: Category.values.firstWhere(
-            (category) => category.toString() == data['category'],
-          ),
-          price: data['price'],
-          date: DateTime.parse(data['date']),
-          time: data['time'],
-        );
-        _categorySum[newExpense.categ] =
-            _categorySum[newExpense.categ]! + newExpense.price;
-        return newExpense;
-      }).toList();
+      final expenses = querySnapshot.docs
+          .map((doc) {
+            final data = doc.data();
+            DateTime expenseDate;
+            if (data['date'] is Timestamp) {
+              expenseDate = (data['date'] as Timestamp).toDate();
+            } else if (data['date'] is String) {
+              expenseDate = DateTime.parse(data['date']);
+            } else {
+              throw Exception("Unexpected date format in Firestore");
+            }
+            if (expenseDate.month == datetime.month) {
+              final newExpense = Expense(
+                title: data['title'],
+                categ: Category.values.firstWhere(
+                  (category) => category.toString() == data['category'],
+                ),
+                price: data['price'],
+                date: expenseDate,
+              );
+              _categorySum[newExpense.categ] =
+                  _categorySum[newExpense.categ]! + newExpense.price;
+              return newExpense;
+            }
+            return null;
+          })
+          .whereType<Expense>()
+          .toList();
+
       isFetching = false;
       state = expenses;
-
-      state = [...state];
     } catch (e) {
+      isFetching = false;
       throw Exception('Failed to fetch data: $e');
     }
   }

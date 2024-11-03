@@ -23,13 +23,13 @@ ThemeData darktheme = ThemeData(
   textTheme: const TextTheme().copyWith(
     titleLarge: const TextStyle(
       color: Colors.white, // Change to white for better visibility
-      fontSize: 20,
-      fontWeight: FontWeight.bold,
+      fontSize: 25,
+      fontWeight: FontWeight.w600,
     ),
     bodySmall: const TextStyle(
       color: Color.fromARGB(
           255, 28, 28, 28), // Change to white for better visibility
-      fontSize: 16,
+      fontSize: 18,
       fontWeight: FontWeight.normal,
     ),
   ),

@@ -26,6 +26,8 @@ dependencies:
   material_design_icons_flutter: ^7.0.7296
   image_picker: ^1.1.2
   firebase_storage: ^12.3.3
+  flutter_staggered_grid_view: ^0.7.0
+  month_picker_dialog: ^5.1.3
 
 dev_dependencies:
   flutter_test:
@@ -43,4 +45,11 @@ flutter:
 
   assets:
     - lib/assets/images/wallet-8184645_1280.png
+    - lib/assets/images/dart.png
+    - lib/assets/images/—Pngtree—man avatar image for profile_13001882.png
+    - lib/assets/images/go.png
+    - lib/assets/images/vue.png
+    - lib/assets/images/graph.png
+    - lib/assets/images/moneybag.png
+    - lib/assets/images/—Pngtree—money bag vector_9168976.png
     - lib/assets/images/google.png

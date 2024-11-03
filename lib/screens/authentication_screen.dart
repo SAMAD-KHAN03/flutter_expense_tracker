@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_expenses/animations/loading_animation.dart';
 import 'package:my_expenses/providers/auth_provider.dart';
 
 class LoginScreen extends ConsumerWidget {
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
-
   LoginScreen({super.key});
 
   @override
@@ -113,9 +113,7 @@ class LoginScreen extends ConsumerWidget {
                   ],
                 ),
                 if (isLoading)
-                  const CircularProgressIndicator(
-                    backgroundColor: Colors.white,
-                  ),
+                LoadingAnimation(),
               ],
             ),
           ),

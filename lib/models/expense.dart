@@ -28,14 +28,13 @@ class Expense {
   final Category categ;
   final double price;
   DateTime date;
-  String time;
+
 
   Expense({
     required this.title,
     required this.categ,
     required this.price,
     required this.date,
-    required this.time,
   }) : id = const Uuid().v4();
 
   String get formattedDate {

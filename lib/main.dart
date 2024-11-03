@@ -33,7 +33,7 @@ class MyApp extends ConsumerWidget {
       home: user.when(
           data: (data) {
             if (data != null) {
-              return const MainScreen();
+              return const HomeScreen();
             } else {
               return LoginScreen();
             }

@@ -60,7 +60,7 @@ class CardWidget extends ConsumerWidget {
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                         Text(
-                          expense.time,
+                          "${expense.date.hour.toString().padLeft(2, '0')}:${expense.date.minute.toString().padLeft(2, '0')}:${expense.date.second.toString().padLeft(2, '0')}",
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ],
