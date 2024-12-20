@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:my_expenses/animations/loading_animation.dart';
 import 'package:my_expenses/models/user_profile.dart';
 import 'package:my_expenses/providers/auth_provider.dart';
 import 'package:my_expenses/providers/user_profile_provider.dart';
@@ -34,14 +35,27 @@ class _ProfilePage extends ConsumerState<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    final uid = ref.read(authenticationProvider.notifier).uid();
-    ref.read(userProfileProvider.notifier).fetchData(uid).then((_) {
-      final userProfile = ref.read(userProfileProvider);
 
-      if (userProfile != null) {
-        name.text = userProfile.name;
-        email.text = userProfile.email;
-        phoneNumber.text = userProfile.phoneNumber;
+    // Get the user ID
+    final uid = ref.read(authenticationProvider.notifier).uid();
+
+    // Fetch data without toggling the state in initState
+
+/**by this we are ensuring that profile must be fetched as soon as widget tree builds  */
+    Future.microtask(() async {
+      try {
+        ref.read(userProfileProvider.notifier).toggleState("isFetching", true);
+        await ref.read(userProfileProvider.notifier).fetchData(uid);
+        final userProfile = ref.read(userProfileProvider);
+        if (userProfile != null) {
+          name.text = userProfile.name;
+          email.text = userProfile.email;
+          phoneNumber.text = userProfile.phoneNumber;
+        }
+      } catch (e) {
+        print("Error fetching user profile: $e");
+      } finally {
+        ref.read(userProfileProvider.notifier).toggleState("isFetching", false);
       }
     });
   }
@@ -57,6 +71,9 @@ class _ProfilePage extends ConsumerState<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final userProfile = ref.watch(userProfileProvider);
+    final isFetching = ref.watch(userProfileProvider.notifier).isFetching;
+    final isUploading = ref.watch(userProfileProvider.notifier).isUploading;
+
     ImageProvider<Object> avatarImage;
     if (selectedImage != null) {
       avatarImage = FileImage(selectedImage!);
@@ -64,9 +81,15 @@ class _ProfilePage extends ConsumerState<ProfilePage> {
         userProfile.profilePictureUrl.isNotEmpty) {
       avatarImage = NetworkImage(userProfile.profilePictureUrl);
     } else {
-      avatarImage = AssetImage(
+      avatarImage = const AssetImage(
           'lib/assets/images/—Pngtree—man avatar image for profile_13001882.png');
     }
+
+    // Show a loading indicator while data is being fetched
+    if (isFetching || isUploading) {
+      return const LoadingAnimation();
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -154,6 +177,9 @@ class _ProfilePage extends ConsumerState<ProfilePage> {
             ),
             TextButton.icon(
               onPressed: () {
+                ref
+                    .watch(userProfileProvider.notifier)
+                    .toggleState("isUploading", true);
                 final uid = ref.read(authenticationProvider.notifier).uid();
                 ref
                     .watch(userProfileProvider.notifier)

@@ -6,6 +6,7 @@ import 'package:my_expenses/providers/auth_provider.dart';
 import 'package:my_expenses/providers/user_profile_provider.dart';
 import 'package:my_expenses/screens/expense_screen.dart';
 import 'package:my_expenses/screens/profile_page.dart';
+import 'package:my_expenses/screens/scheduleExpense.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -112,14 +113,17 @@ Widget courseLayout(BuildContext context) {
   List<String> imageFileList = [
     '—Pngtree—money bag vector_9168976.png',
     '—Pngtree—man avatar image for profile_13001882.png',
+    'budget.png'
   ];
   List<String> textList = [
     "See Expenses",
-    "see Profile",
+    "Manage Profile",
+    "Schedule Expenses"
   ];
   List<Widget> functionality = const [
     ExpenseScreen(),
     ProfilePage(),
+    ScheduleExpense(),
   ];
   return MasonryGridView.count(
     shrinkWrap: true,

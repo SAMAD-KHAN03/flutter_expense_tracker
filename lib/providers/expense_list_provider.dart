@@ -34,11 +34,11 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
     }
 
     final expense = Expense(
-      title: title,
-      categ: category,
-      price: price,
-      date: date,
-    );
+        title: title,
+        categ: category,
+        price: price,
+        date: date,
+        isScheduled: date.isAfter(DateTime.now()));
 
     try {
       final expenseDoc = FirebaseFirestore.instance
@@ -51,7 +51,9 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
         'category': expense.categ.toString(),
         'price': expense.price,
         'date': expense.date.toIso8601String(),
+        'isScheduled': expense.isScheduled
       });
+      // print(expense.date.runtimeType);
       _categorySum[expense.categ] =
           _categorySum[expense.categ]! + expense.price;
       state = [...state, expense];
@@ -88,20 +90,17 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
             } else {
               throw Exception("Unexpected date format in Firestore");
             }
-            if (expenseDate.month == datetime.month) {
-              final newExpense = Expense(
-                title: data['title'],
-                categ: Category.values.firstWhere(
-                  (category) => category.toString() == data['category'],
-                ),
-                price: data['price'],
-                date: expenseDate,
-              );
-              _categorySum[newExpense.categ] =
-                  _categorySum[newExpense.categ]! + newExpense.price;
-              return newExpense;
-            }
-            return null;
+            final newExpense = Expense(
+              title: data['title'],
+              categ: Category.values.firstWhere(
+                (category) => category.toString() == data['category'],
+              ),
+              price: data['price'],
+              date: expenseDate,
+            );
+            _categorySum[newExpense.categ] =
+                _categorySum[newExpense.categ]! + newExpense.price;
+            return newExpense;
           })
           .whereType<Expense>()
           .toList();

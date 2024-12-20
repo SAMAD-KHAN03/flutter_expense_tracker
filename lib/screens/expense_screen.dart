@@ -54,7 +54,11 @@ class _MainScreenState extends ConsumerState<ExpenseScreen> {
   @override
   Widget build(BuildContext context) {
     var auth = ref.watch(authenticationProvider);
-    final list = ref.watch(listprovider);
+    final list = ref
+        .watch(listprovider)
+        .where((expense) => (expense.date.month == _selectedMonth.month &&
+            expense.isScheduled == false))
+        .toList();
     bool isfetching = ref.watch(listprovider.notifier).isFetching;
     double totalAmount =
         ref.watch(listprovider.notifier).categorySum.values.fold(
@@ -120,7 +124,9 @@ class _MainScreenState extends ConsumerState<ExpenseScreen> {
                         ),
                       ),
                       const Chart(),
-                      const CardWidget(),
+                      CardWidget(
+                        list: list,
+                      ),
                     ],
                   ),
                 ),

@@ -7,7 +7,7 @@ import 'package:my_expenses/screens/home_screen.dart';
 import 'firebase_options.dart';
 import 'package:my_expenses/themes/dark_theme.dart';
 import 'package:my_expenses/themes/light_theme.dart';
-
+// git stash apply
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(

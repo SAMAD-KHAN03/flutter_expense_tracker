@@ -112,8 +112,7 @@ class LoginScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                if (isLoading)
-                LoadingAnimation(),
+                if (isLoading) const LoadingAnimation(),
               ],
             ),
           ),
