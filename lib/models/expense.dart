@@ -26,6 +26,7 @@ class Expense {
   final Category categ;
   final double price;
   DateTime dueDate;
+  bool isScheduled;
   final bool? emailSent;
   DateTime date;
 
@@ -35,6 +36,7 @@ class Expense {
       required this.price,
       required this.date,
       required this.dueDate,
+      required this.isScheduled,
       this.emailSent = false})
       : id = const Uuid().v4();
 

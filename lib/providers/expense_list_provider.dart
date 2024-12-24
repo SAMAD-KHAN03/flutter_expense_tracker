@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:my_expenses/boilerPlate/convertTimeStamp.dart';
 import 'package:my_expenses/models/expense.dart';
+
+DateTime convert(Timestamp input) {
+  // Convert Timestamp to DateTime
+  DateTime dateTime = input.toDate();
+  return dateTime;
+}
 
 class ExpenseListProvider extends StateNotifier<List<Expense>> {
   bool isFetching = false;
@@ -33,7 +38,7 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
     Category category,
     double price,
     DateTime date,
-    DateTime DueData,
+    DateTime DueDate,
   ) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
@@ -45,7 +50,8 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
         categ: category,
         price: price,
         date: date,
-        dueDate: DueData);
+        dueDate: DueDate,
+        isScheduled: DueDate.isAfter(date));
 
     try {
       final expenseDoc = FirebaseFirestore.instance
@@ -58,7 +64,8 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
         'category': expense.categ.toString(),
         'price': expense.price,
         'date': expense.date,
-        'dueDate': expense.dueDate
+        'dueDate': expense.dueDate,
+        'isScheduled': expense.isScheduled
       });
       // print(expense.date.runtimeType);
       _categorySum[expense.categ] =
@@ -97,7 +104,9 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
                 ),
                 price: data['price'],
                 date: convert(data['date']),
-                dueDate: convert(data['dueDate']));
+                dueDate: convert(data['dueDate']),
+                isScheduled: data['isScheduled']);
+
             _categorySum[newExpense.categ] =
                 _categorySum[newExpense.categ]! + newExpense.price;
             return newExpense;

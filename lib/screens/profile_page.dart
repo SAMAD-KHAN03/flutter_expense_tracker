@@ -181,18 +181,13 @@ class _ProfilePage extends ConsumerState<ProfilePage> {
                     .watch(userProfileProvider.notifier)
                     .toggleState("isUploading", true);
                 final uid = ref.read(authenticationProvider.notifier).uid();
-                ref
-                    .watch(userProfileProvider.notifier)
-                    .createOrUpdateUserProfile(UserProfile(
+                ref.watch(userProfileProvider.notifier).manageProfile(
+                    UserProfile(
                         uid: uid,
                         name: name.text,
                         email: email.text,
-                        phoneNumber: phoneNumber.text));
-                if (selectedImage != null) {
-                  ref
-                      .read(userProfileProvider.notifier)
-                      .uploadProfilePic(selectedImage!, uid);
-                }
+                        phoneNumber: phoneNumber.text),
+                    selectedImage);
               },
               label: Text('Create Profile'),
               icon: Icon(Icons.account_box),

@@ -59,9 +59,8 @@ class _MainScreenState extends ConsumerState<ExpenseScreen> {
     var auth = ref.watch(authenticationProvider);
     var list = ref.watch(listprovider);
     widget.isScheduled
-        ? list = list
-            .where((expense) => expense.date!=expense.dueDate)
-            .toList()
+        ? list =
+            list.where((expense) => expense.date != expense.dueDate).toList()
         : list = list
             .where((expense) =>
                 expense.date.month == _selectedMonth.month &&

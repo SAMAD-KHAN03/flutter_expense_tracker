@@ -3,7 +3,7 @@ class UserProfile {
   final String name;
   final String email;
   final String phoneNumber; // Add phone number as a String
-  final String profilePictureUrl;
+  String profilePictureUrl;
 
   UserProfile({
     required this.uid,
