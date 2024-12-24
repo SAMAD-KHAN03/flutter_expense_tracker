@@ -29,7 +29,7 @@ class _ScheduleExpenses extends ConsumerState<ScheduleExpense> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(
-            SlideTransitionUtil.slideTransition(const AddExpenseScreen()),
+            SlideTransitionUtil.slideTransition( AddExpenseScreen(isScheduled: true,)),
           );
         },
         child: const Icon(Icons.add),

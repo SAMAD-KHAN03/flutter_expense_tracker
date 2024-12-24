@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_expenses/boilerPlate/convertTimeStamp.dart';
 import 'package:my_expenses/models/expense.dart';
 
-
 class ExpenseListProvider extends StateNotifier<List<Expense>> {
   bool isFetching = false;
 
@@ -28,8 +27,14 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
     }
   }
 
-  Future<void> addItem(BuildContext context, String title, Category category,
-      double price, DateTime date) async {
+  Future<void> addItem(
+    BuildContext context,
+    String title,
+    Category category,
+    double price,
+    DateTime date,
+    DateTime DueData,
+  ) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       throw Exception('User not authenticated');
@@ -40,7 +45,7 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
         categ: category,
         price: price,
         date: date,
-        dueDate: date.isAfter(DateTime.now()) ? DateTime.now() : date);
+        dueDate: DueData);
 
     try {
       final expenseDoc = FirebaseFirestore.instance
@@ -52,7 +57,7 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
         'title': expense.title,
         'category': expense.categ.toString(),
         'price': expense.price,
-        'date': expense.date.toIso8601String(),
+        'date': expense.date,
         'dueDate': expense.dueDate
       });
       // print(expense.date.runtimeType);
@@ -66,7 +71,7 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
   }
 
   Future<void> fetchData({DateTime? month}) async {
-    final datetime = month ?? DateTime.now();
+    // final datetime = month ?? DateTime.now();
     isFetching = true;
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
@@ -91,7 +96,7 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
                   (category) => category.toString() == data['category'],
                 ),
                 price: data['price'],
-                date: DateTime.parse(data['date']),
+                date: convert(data['date']),
                 dueDate: convert(data['dueDate']));
             _categorySum[newExpense.categ] =
                 _categorySum[newExpense.categ]! + newExpense.price;

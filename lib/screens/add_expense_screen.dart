@@ -4,7 +4,8 @@ import 'package:my_expenses/models/expense.dart';
 import 'package:my_expenses/providers/expense_list_provider.dart';
 
 class AddExpenseScreen extends ConsumerStatefulWidget {
-  const AddExpenseScreen({super.key});
+  bool isScheduled;
+  AddExpenseScreen({super.key, required this.isScheduled});
 
   @override
   ConsumerState<AddExpenseScreen> createState() => _AddExpenseScreenState();
@@ -21,6 +22,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
   }
 
   var _pickedDate = DateTime.now();
+  var _currentDate = DateTime.now();
   var _selectedCategory = Category.bills;
 
   void _openDatePicker(BuildContext context) async {
@@ -63,30 +65,32 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                   ),
                 ),
                 const SizedBox(width: 20),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 35, 0, 0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            formatter.format(_pickedDate),
-                            style: const TextStyle(
-                              decoration: TextDecoration.underline,
-                              fontSize: 18,
-                            ),
+                widget.isScheduled
+                    ? Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 35, 0, 0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  formatter.format(_pickedDate),
+                                  style: const TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  _openDatePicker(context);
+                                },
+                                icon: const Icon(Icons.calendar_month),
+                              ),
+                            ],
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {
-                            _openDatePicker(context);
-                          },
-                          icon: const Icon(Icons.calendar_month),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                      )
+                    : Text(''),
               ],
             ),
             Row(
@@ -100,21 +104,24 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                   ),
                 ),
                 const SizedBox(width: 20),
-                DropdownMenu<Category>(
-                  initialSelection: _selectedCategory,
-                  onSelected: (value) {
-                    setState(() {
-                      _selectedCategory = value!;
-                    });
-                  },
-                  leadingIcon: Icon(categoryIcons[_selectedCategory]),
-                  dropdownMenuEntries: Category.values
-                      .map<DropdownMenuEntry<Category>>((individualCategory) {
-                    return DropdownMenuEntry(
-                      value: individualCategory,
-                      label: individualCategory.name.toUpperCase(),
-                    );
-                  }).toList(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownMenu<Category>(
+                    initialSelection: _selectedCategory,
+                    onSelected: (value) {
+                      setState(() {
+                        _selectedCategory = value!;
+                      });
+                    },
+                    leadingIcon: Icon(categoryIcons[_selectedCategory]),
+                    dropdownMenuEntries: Category.values
+                        .map<DropdownMenuEntry<Category>>((individualCategory) {
+                      return DropdownMenuEntry(
+                        value: individualCategory,
+                        label: individualCategory.name.toUpperCase(),
+                      );
+                    }).toList(),
+                  ),
                 ),
               ],
             ),
@@ -133,7 +140,8 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                           title.text,
                           _selectedCategory,
                           double.tryParse(price.text)!,
-                          _pickedDate,
+                          DateTime.now(),
+                          widget.isScheduled ? _pickedDate : DateTime.now(),
                         );
                     price.clear();
                     title.clear();

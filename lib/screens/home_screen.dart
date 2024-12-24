@@ -120,10 +120,14 @@ Widget courseLayout(BuildContext context) {
     "Manage Profile",
     "Schedule Expenses"
   ];
-  List<Widget> functionality = const [
-    ExpenseScreen(),
+  List<Widget> functionality = [
+    ExpenseScreen(
+      isScheduled: false,
+    ),
     ProfilePage(),
-    ScheduleExpense(),
+    ExpenseScreen(
+      isScheduled: true,
+    ),
   ];
   return MasonryGridView.count(
     shrinkWrap: true,

@@ -1,10 +1,11 @@
+import 'dart:isolate';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:my_expenses/animations/loading_animation.dart';
 import 'package:my_expenses/animations/slide_transition.dart';
-import 'package:my_expenses/boilerPlate/convertTimeStamp.dart';
 import 'package:my_expenses/providers/auth_provider.dart';
 import 'package:my_expenses/providers/expense_list_provider.dart';
 import 'package:my_expenses/screens/add_expense_screen.dart';
@@ -12,7 +13,8 @@ import 'package:my_expenses/widgets/card_widget.dart';
 import 'package:my_expenses/widgets/chart.dart';
 
 class ExpenseScreen extends ConsumerStatefulWidget {
-  const ExpenseScreen({super.key});
+  bool isScheduled;
+  ExpenseScreen({super.key, required this.isScheduled});
 
   @override
   ConsumerState<ExpenseScreen> createState() => _MainScreenState();
@@ -33,7 +35,7 @@ class _MainScreenState extends ConsumerState<ExpenseScreen> {
     if (pickedMonth != null) {
       setState(() {
         _selectedMonth = pickedMonth;
-        ref.read(listprovider.notifier).fetchData(month: _selectedMonth);
+        //ref.read(listprovider.notifier).fetchData(month: _selectedMonth);
       });
     }
   }
@@ -57,7 +59,7 @@ class _MainScreenState extends ConsumerState<ExpenseScreen> {
     var auth = ref.watch(authenticationProvider);
     final list = ref
         .watch(listprovider)
-        .where((expense) => expense.dueDate.isBefore(DateTime.now()) == true)
+        .where((expense) => expense.date.month == _selectedMonth.month)
         .toList();
     bool isfetching = ref.watch(listprovider.notifier).isFetching;
     double totalAmount =
@@ -98,8 +100,10 @@ class _MainScreenState extends ConsumerState<ExpenseScreen> {
       floatingActionButton: FloatingActionButton(
         focusElevation: 2.0,
         onPressed: () {
-          Navigator.of(context).push(
-              SlideTransitionUtil.slideTransition(const AddExpenseScreen()));
+          Navigator.of(context)
+              .push(SlideTransitionUtil.slideTransition(AddExpenseScreen(
+            isScheduled: widget.isScheduled,
+          )));
         },
         child: const Icon(Icons.add),
       ),
