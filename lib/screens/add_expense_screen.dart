@@ -86,6 +86,9 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                                 },
                                 icon: const Icon(Icons.calendar_month),
                               ),
+                              const SizedBox(
+                                width: 20,
+                              )
                             ],
                           ),
                         ),

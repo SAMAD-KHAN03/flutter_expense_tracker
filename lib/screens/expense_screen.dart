@@ -57,10 +57,17 @@ class _MainScreenState extends ConsumerState<ExpenseScreen> {
   @override
   Widget build(BuildContext context) {
     var auth = ref.watch(authenticationProvider);
-    final list = ref
-        .watch(listprovider)
-        .where((expense) => expense.date.month == _selectedMonth.month)
-        .toList();
+    var list = ref.watch(listprovider);
+    widget.isScheduled
+        ? list = list
+            .where((expense) => expense.date!=expense.dueDate)
+            .toList()
+        : list = list
+            .where((expense) =>
+                expense.date.month == _selectedMonth.month &&
+                expense.date == expense.dueDate)
+            .toList();
+
     bool isfetching = ref.watch(listprovider.notifier).isFetching;
     double totalAmount =
         ref.watch(listprovider.notifier).categorySum.values.fold(
