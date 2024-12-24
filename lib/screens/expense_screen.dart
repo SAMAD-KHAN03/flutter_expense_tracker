@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:my_expenses/animations/loading_animation.dart';
 import 'package:my_expenses/animations/slide_transition.dart';
+import 'package:my_expenses/boilerPlate/convertTimeStamp.dart';
 import 'package:my_expenses/providers/auth_provider.dart';
 import 'package:my_expenses/providers/expense_list_provider.dart';
 import 'package:my_expenses/screens/add_expense_screen.dart';
@@ -56,8 +57,7 @@ class _MainScreenState extends ConsumerState<ExpenseScreen> {
     var auth = ref.watch(authenticationProvider);
     final list = ref
         .watch(listprovider)
-        .where((expense) => (expense.date.month == _selectedMonth.month &&
-            expense.isScheduled == false))
+        .where((expense) => expense.dueDate.isBefore(DateTime.now()) == true)
         .toList();
     bool isfetching = ref.watch(listprovider.notifier).isFetching;
     double totalAmount =

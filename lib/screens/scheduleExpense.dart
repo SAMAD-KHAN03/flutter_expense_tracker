@@ -16,7 +16,7 @@ class _ScheduleExpenses extends ConsumerState<ScheduleExpense> {
   Widget build(BuildContext context) {
     final list = ref
         .watch(listprovider)
-        .where((expense) => expense.isScheduled == true)
+        .where((expense) => expense.dueDate.isAfter(DateTime.now()) == true)
         .toList();
     return Scaffold(
       appBar: AppBar(

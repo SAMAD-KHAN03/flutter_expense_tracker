@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_expenses/models/expense.dart';
-import 'package:my_expenses/providers/expense_list_provider.dart';
+
 
 class CardWidget extends ConsumerWidget {
   List<Expense?> list;

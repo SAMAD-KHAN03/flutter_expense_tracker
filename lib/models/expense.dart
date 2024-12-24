@@ -25,16 +25,18 @@ class Expense {
   final String title;
   final Category categ;
   final double price;
-  final bool? isScheduled;
+  DateTime dueDate;
+  final bool? emailSent;
   DateTime date;
 
-  Expense({
-    required this.title,
-    required this.categ,
-    required this.price,
-    required this.date,
-    this.isScheduled = false,
-  }) : id = const Uuid().v4();
+  Expense(
+      {required this.title,
+      required this.categ,
+      required this.price,
+      required this.date,
+      required this.dueDate,
+      this.emailSent = false})
+      : id = const Uuid().v4();
 
   String get formattedDate {
     return formatter.format(date);

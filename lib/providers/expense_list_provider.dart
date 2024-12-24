@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:my_expenses/boilerPlate/convertTimeStamp.dart';
 import 'package:my_expenses/models/expense.dart';
+
 
 class ExpenseListProvider extends StateNotifier<List<Expense>> {
   bool isFetching = false;
@@ -38,7 +40,7 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
         categ: category,
         price: price,
         date: date,
-        isScheduled: date.isAfter(DateTime.now()));
+        dueDate: date.isAfter(DateTime.now()) ? DateTime.now() : date);
 
     try {
       final expenseDoc = FirebaseFirestore.instance
@@ -51,7 +53,7 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
         'category': expense.categ.toString(),
         'price': expense.price,
         'date': expense.date.toIso8601String(),
-        'isScheduled': expense.isScheduled
+        'dueDate': expense.dueDate
       });
       // print(expense.date.runtimeType);
       _categorySum[expense.categ] =
@@ -82,22 +84,15 @@ class ExpenseListProvider extends StateNotifier<List<Expense>> {
       final expenses = querySnapshot.docs
           .map((doc) {
             final data = doc.data();
-            DateTime expenseDate;
-            if (data['date'] is Timestamp) {
-              expenseDate = (data['date'] as Timestamp).toDate();
-            } else if (data['date'] is String) {
-              expenseDate = DateTime.parse(data['date']);
-            } else {
-              throw Exception("Unexpected date format in Firestore");
-            }
+
             final newExpense = Expense(
-              title: data['title'],
-              categ: Category.values.firstWhere(
-                (category) => category.toString() == data['category'],
-              ),
-              price: data['price'],
-              date: expenseDate,
-            );
+                title: data['title'],
+                categ: Category.values.firstWhere(
+                  (category) => category.toString() == data['category'],
+                ),
+                price: data['price'],
+                date: DateTime.parse(data['date']),
+                dueDate: convert(data['dueDate']));
             _categorySum[newExpense.categ] =
                 _categorySum[newExpense.categ]! + newExpense.price;
             return newExpense;
