@@ -37,10 +37,12 @@ class UserProfileProvider extends StateNotifier<UserProfile?> {
         throw Exception('user Profile not found');
       }
     } catch (e) {
+      state = null;
       throw Exception('Failed to fetch user profile ${e} ');
     } finally {
       toggleState("isFetching", false);
-      print("isFetching = $isFetching");
+
+      // print("isFetching = $isFetching");
     }
   }
 
@@ -57,29 +59,34 @@ class UserProfileProvider extends StateNotifier<UserProfile?> {
       final downloadUrl = await storageRef.getDownloadURL();
       userProfile.profilePictureUrl = downloadUrl;
       var profileObject = userProfile.toMap();
-      print(profileObject);
+      // print(profileObject);
       await FirebaseFirestore.instance
           .collection('users')
           .doc(userProfile.uid)
           .collection('userProfile')
           .doc('profileDetails')
-          .set(profileObject, SetOptions(merge: true));
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userProfile.uid)
-          .collection('userProfile')
-          .doc('profileDetails')
-          .update(
-        {'profilePictureUrl': downloadUrl},
-      );
+          .set(profileObject, SetOptions(merge: true))
+          .then((erg) async {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userProfile.uid)
+            .collection('userProfile')
+            .doc('profileDetails')
+            .update(
+          {'profilePictureUrl': downloadUrl},
+        );
+      }, onError: (e) {
+        throw Exception(e.toString());
+      });
+
       //fetchData(userProfile.uid);
-      print('fetch executed successfully');
+      // print('fetch executed successfully');
       state = userProfile;
     } catch (e) {
       throw Exception('Failed to create or update user profile: $e');
     } finally {
       toggleState("isUploading", false);
-      print("isUploading = $isUploading");
+      // print("isUplo̦ading = $isUploading");
     }
   }
 }

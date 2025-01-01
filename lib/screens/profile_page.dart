@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors
+import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +21,7 @@ class _ProfilePage extends ConsumerState<ProfilePage> {
   TextEditingController name = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController phoneNumber = TextEditingController();
+  bool isUserProfileNull = true;
   // Function to pick and upload a profile image
   Future<void> pickImage() async {
     final imagePicker = ImagePicker();
@@ -51,6 +53,7 @@ class _ProfilePage extends ConsumerState<ProfilePage> {
           name.text = userProfile.name;
           email.text = userProfile.email;
           phoneNumber.text = userProfile.phoneNumber;
+          isUserProfileNull = false;
         }
       } catch (e) {
         print("Error fetching user profile: $e");
@@ -189,7 +192,7 @@ class _ProfilePage extends ConsumerState<ProfilePage> {
                         phoneNumber: phoneNumber.text),
                     selectedImage);
               },
-              label: Text('Create Profile'),
+              label:isUserProfileNull? Text('Create Profile'):Text('Update Profile'),
               icon: Icon(Icons.account_box),
             )
           ],
